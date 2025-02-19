@@ -9,6 +9,8 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(''); // Nuevo estado para confirmación de contraseña
+
   const [isRegistering, setIsRegistering] = useState(false); // Nuevo estado para registrar
 
 
@@ -28,11 +30,17 @@ export default function App() {
       Alert.alert("Error", error.message);
     }
   };
+  
   const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Las contraseñas no coinciden");
+      return;
+    }
+
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       Alert.alert("Registro exitoso", "Ahora puedes iniciar sesión");
-      setIsRegistering(false); 
+      setIsRegistering(false); // Regresar a la vista de login después de registrarse
     } catch (error) {
       Alert.alert("Error", error.message);
     }
@@ -77,6 +85,15 @@ export default function App() {
             value={password}
             onChangeText={setPassword}
           />
+           {isRegistering && (
+            <Input
+            inputContainerStyle={{width: '100%'}}
+            placeholder="Confirmar Contraseña"
+              secureTextEntry
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+            />
+          )}
          <TouchableOpacity style={styles.button} onPress={isRegistering ? handleRegister : handleLogin}>
             <Text style={styles.buttonText}>{isRegistering ? "Registrar" : "Ingresar"}</Text>
           </TouchableOpacity>
